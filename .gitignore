@@ -133,3 +133,6 @@ dmypy.json
 outputs
 *.gz
 *.DS_Store
+
+# models
+*.ckpt

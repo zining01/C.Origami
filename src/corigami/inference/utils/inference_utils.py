@@ -6,14 +6,18 @@ import torch
 
 from corigami.inference.utils.model_utils import load_default
 
-def preprocess_default(seq, ctcf, atac):
+def preprocess_default(seq, ctcf, atac, dim = 1):
     # Process sequence
     seq = torch.tensor(seq).unsqueeze(0) 
     # Normailze ctcf and atac-seq
     ctcf = torch.tensor(np.nan_to_num(ctcf, 0)) # Important! replace nan with 0
     atac_log = torch.tensor(atac) # Important! replace nan with 0
-    # Merge inputs
-    features = [ctcf, atac_log]
+    # Edited: if dim = 1 then use ATAC only
+    if dim > 1:
+        features = [ctcf, atac_log]
+    else:
+        features = [atac_log]
+    ## End edit: merge ATAC/CTCF channels with sequence features
     features = torch.cat([feat.unsqueeze(0).unsqueeze(2) for feat in features], dim = 2)
     inputs = torch.cat([seq, features], dim = 2)
     # Move input to gpu if available
